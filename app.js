@@ -1,7 +1,18 @@
 //MODULES
 //express app setup
 const express = require("express");
+//import mongoose
+const mongoose = require("mongoose");
+
+// connnect to mongodb
+mongoose.connect("mongodb+srv://admin:ProjectXAdmin123@project-x.wkgu1a4.mongodb.net/?retryWrites=true&w=majority&appName=Project-X", { useNewUrlParser: true, useUnifiedTopology: true });
+
+// import flashcard model
+const Flashcard = require("./model/flashcard");
+
 const app = express();
+
+app.use(express.static('resources'));
 
 //cross-origin resource sharing import
 const cors = require("cors");
@@ -47,6 +58,21 @@ app.put('/user/:id', (req, res) => {
     // update the user name
     user.name = body.name;
     res.json(body);
+});
+
+app.get('/flashcards', (req, res) => {
+    // get all flashcards
+    Flashcard.find({}).then(flashcards => {
+        res.json(flashcards);
+    });
+});
+
+app.get('/flashcards/:id', (req, res) => {
+    const id = req.params.id;
+    // get flashcard by id
+    Flashcard.findById(id).then(flashcard => {
+        res.json(flashcard);
+    });
 });
 
 //exports
